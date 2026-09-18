@@ -1,0 +1,12 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "e2e/**/*", "*.config.ts"],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["node", "vite/client", "vite-plugin-pwa/client"],
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true
+  }
+}
