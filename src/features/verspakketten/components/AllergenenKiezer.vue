@@ -33,6 +33,7 @@ function wisselen(allergeen: Allergeen, aangevinkt: boolean): void {
   padding: var(--ruimte-3);
   border: 1px solid var(--kleur-rand);
   border-radius: var(--straal-klein);
+  background-color: var(--kleur-oppervlak-zwak);
 }
 
 .allergeen {

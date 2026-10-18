@@ -88,6 +88,10 @@ describe('verspakkettenApi endpoints', () => {
     expect(laatsteAanroep(fetchMock)[0]).toBe('/api/verspakketten/abc')
     expect(laatsteAanroep(fetchMock)[1]?.method).toBe('PUT')
 
+    await verspakkettenApi.remove('abc')
+    expect(laatsteAanroep(fetchMock)[0]).toBe('/api/verspakketten/abc')
+    expect(laatsteAanroep(fetchMock)[1]?.method).toBe('DELETE')
+
     await verspakkettenApi.addBeoordeling('abc', {
       cijferSmaak: 8,
       cijferBereiden: 7,
@@ -95,6 +99,20 @@ describe('verspakkettenApi endpoints', () => {
       tekst: null,
     })
     expect(laatsteAanroep(fetchMock)[0]).toBe('/api/verspakketten/abc/beoordelingen')
+    expect(laatsteAanroep(fetchMock)[1]?.method).toBe('POST')
+
+    await verspakkettenApi.updateBeoordeling('abc', 'b1', {
+      cijferSmaak: 8,
+      cijferBereiden: 7,
+      aanbevolen: true,
+      tekst: null,
+    })
+    expect(laatsteAanroep(fetchMock)[0]).toBe('/api/verspakketten/abc/beoordelingen/b1')
+    expect(laatsteAanroep(fetchMock)[1]?.method).toBe('PUT')
+
+    await verspakkettenApi.removeBeoordeling('abc', 'b1')
+    expect(laatsteAanroep(fetchMock)[0]).toBe('/api/verspakketten/abc/beoordelingen/b1')
+    expect(laatsteAanroep(fetchMock)[1]?.method).toBe('DELETE')
 
     await verspakkettenApi.importFromUrl('https://example.nl/product')
     expect(laatsteAanroep(fetchMock)[0]).toBe('/api/verspakketten/import')

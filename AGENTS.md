@@ -61,12 +61,17 @@ npm run lint && npm run format:check && npm run test:unit && npm run test:e2e
 - All HTTP goes through `src/shared/api/httpClient.ts`, which prepends `/api`. Non-2xx becomes `ApiError` (problem details); use `foutmelding(error)` for user-facing messages.
 - Routes are lazy-loaded in `src/app/router.ts` with Dutch `meta.titel`, which drives `document.title`. Register static paths (for example `/verspakketten/toevoegen`) **before** `/verspakketten/:id` so they are not shadowed.
 - Dutch domain names and all visible text; English technical names. Enum labels live in the feature `model/`, not in components.
+- Preserve the restrained visual language: leafy green primary, warm off-white surfaces, muted yellow for ratings/allergens, red only for errors or negative status. Avoid oversized hero panels, loud gradients, excessive pills, and decorative copy.
 - No state-management, i18n, or auth dependency is installed on purpose; justify adding one first.
 - The create/edit form (`VerspakketForm.vue`) owns its validation and emits a `VerspakketFormUitvoer`; views map it to `CreateVerspakketRequest` or `UpdateVerspakketRequest`. In edit mode `fotos: null` means "leave photos untouched".
 - Avoid swapping the whole screen to a loading state during background refreshes: the detail view keeps existing content visible while reloading so success messages are not torn down.
 
 ## Backend companion (`C:\Git\lutra-API`)
 
+- The HTTP API reference is `C:\Git\lutra-API\docs\api.md` (the backend's single source of truth for
+  every endpoint, request/response body, enum, limit and error mapping). Read it before changing
+  anything that touches `/api`, and when the API surface changes update it there alongside the
+  backend, then regenerate this repo's contract with `npm run api:update`.
 - The API is a .NET 10 Clean Architecture solution; run commands from `Lutra/`. Follow its own `AGENTS.md` (feature partials, `Cortex.Mediator`, warning-free build, `Changelog.md` entry per change).
 - Tests run via `dotnet run --project <test project>` (xUnit v3 / Microsoft.Testing.Platform); `dotnet test` is not supported on the .NET 10 SDK. Filter with xUnit flags, e.g. `-- -class "*VerspakkettenControllerTests*"`.
 - Building `Lutra.API` fails while the API is running (`Lutra.API` / Visual Studio lock `bin`). Stop the API first, or build a single project such as `dotnet build Lutra.Application/Lutra.Application.csproj`, or build to a separate output directory with `-o`.

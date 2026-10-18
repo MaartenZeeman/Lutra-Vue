@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import { foutmelding } from '@/shared/api/apiError'
+import { ApiError, foutmelding } from '@/shared/api/apiError'
 import StatusBlok from '@/shared/components/StatusBlok.vue'
 
 import { supermarktenApi } from '../api/supermarktenApi'
@@ -22,6 +22,10 @@ const bewerkId = ref<string | null>(null)
 const bewerkNaam = ref('')
 const bewerkenBezig = ref(false)
 const rijFout = ref<string | null>(null)
+
+const verwijderId = ref<string | null>(null)
+const verwijderenBezig = ref(false)
+const verwijderFout = ref<string | null>(null)
 
 async function laden(reset: boolean): Promise<void> {
   bezig.value = true
@@ -70,12 +74,43 @@ function startBewerken(supermarkt: Supermarkt): void {
   bewerkId.value = supermarkt.id
   bewerkNaam.value = supermarkt.naam
   rijFout.value = null
+  annuleerVerwijderen()
 }
 
 function annuleren(): void {
   bewerkId.value = null
   bewerkNaam.value = ''
   rijFout.value = null
+}
+
+function vraagVerwijderen(id: string): void {
+  verwijderId.value = id
+  verwijderFout.value = null
+}
+
+function annuleerVerwijderen(): void {
+  verwijderId.value = null
+  verwijderFout.value = null
+}
+
+async function verwijderen(id: string): Promise<void> {
+  verwijderenBezig.value = true
+  verwijderFout.value = null
+
+  try {
+    await supermarktenApi.remove(id)
+    verwijderId.value = null
+    await laden(true)
+  } catch (foutWaarde) {
+    if (foutWaarde instanceof ApiError && foutWaarde.status === 409) {
+      verwijderFout.value =
+        'Deze supermarkt heeft nog verspakketten. Verwijder of verplaats die eerst.'
+    } else {
+      verwijderFout.value = foutmelding(foutWaarde)
+    }
+  } finally {
+    verwijderenBezig.value = false
+  }
 }
 
 async function opslaan(id: string): Promise<void> {
@@ -162,10 +197,39 @@ onMounted(() => {
           <template v-else>
             <span class="rij__naam">{{ supermarkt.naam }}</span>
             <div class="rij__acties">
-              <button class="knop knop--klein" type="button" @click="startBewerken(supermarkt)">
-                Bewerken
-              </button>
+              <template v-if="verwijderId === supermarkt.id">
+                <button
+                  class="knop knop--klein knop--gevaar"
+                  type="button"
+                  :disabled="verwijderenBezig"
+                  @click="verwijderen(supermarkt.id)"
+                >
+                  {{ verwijderenBezig ? 'Bezig…' : 'Ja, verwijderen' }}
+                </button>
+                <button class="knop knop--klein" type="button" @click="annuleerVerwijderen">
+                  Annuleren
+                </button>
+              </template>
+              <template v-else>
+                <button class="knop knop--klein" type="button" @click="startBewerken(supermarkt)">
+                  Bewerken
+                </button>
+                <button
+                  class="knop knop--klein knop--gevaar"
+                  type="button"
+                  @click="vraagVerwijderen(supermarkt.id)"
+                >
+                  Verwijderen
+                </button>
+              </template>
             </div>
+            <p
+              v-if="verwijderFout && verwijderId === supermarkt.id"
+              class="foutmelding rij__fout"
+              role="alert"
+            >
+              {{ verwijderFout }}
+            </p>
           </template>
         </li>
       </ul>
@@ -195,6 +259,7 @@ onMounted(() => {
   align-items: end;
   padding: var(--ruimte-4);
   margin-bottom: var(--ruimte-4);
+  border-top: 4px solid var(--kleur-primair);
 }
 
 .lijst {
@@ -211,6 +276,11 @@ onMounted(() => {
   align-items: center;
   gap: var(--ruimte-3);
   padding: var(--ruimte-3) var(--ruimte-4);
+  transition: border-color 0.15s ease;
+}
+
+.rij:hover {
+  border-color: var(--kleur-rand-sterk);
 }
 
 .rij__naam {

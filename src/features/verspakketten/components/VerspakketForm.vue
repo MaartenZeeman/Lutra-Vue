@@ -76,6 +76,7 @@ const beoordelingSmaak = ref(8)
 const beoordelingBereiden = ref(8)
 const beoordelingAanbevolen = ref(true)
 const beoordelingTekst = ref('')
+const beoordelingToevoegen = ref(false)
 
 const fotosGewijzigd = ref(false)
 const supermarkten = ref<Supermarkt[]>([])
@@ -151,7 +152,7 @@ function valideer(): string[] {
     }
   }
 
-  if (!isBewerken.value) {
+  if (!isBewerken.value && beoordelingToevoegen.value) {
     if (beoordelingSmaak.value < 1 || beoordelingSmaak.value > 10) {
       meldingen.push('Het cijfer voor smaak moet tussen 1 en 10 liggen.')
     }
@@ -177,14 +178,15 @@ function verzenden(): void {
   }
 
   const euros = Number(prijsInEuros.value.replace(',', '.'))
-  const beoordeling: BeoordelingAanmaak | null = isBewerken.value
-    ? null
-    : {
-        cijferSmaak: beoordelingSmaak.value,
-        cijferBereiden: beoordelingBereiden.value,
-        aanbevolen: beoordelingAanbevolen.value,
-        tekst: beoordelingTekst.value.trim().length > 0 ? beoordelingTekst.value.trim() : null,
-      }
+  const beoordeling: BeoordelingAanmaak | null =
+    isBewerken.value || !beoordelingToevoegen.value
+      ? null
+      : {
+          cijferSmaak: beoordelingSmaak.value,
+          cijferBereiden: beoordelingBereiden.value,
+          aanbevolen: beoordelingAanbevolen.value,
+          tekst: beoordelingTekst.value.trim().length > 0 ? beoordelingTekst.value.trim() : null,
+        }
 
   emit('opslaan', {
     naam: naam.value.trim(),
@@ -280,10 +282,11 @@ function verzenden(): void {
 
     <fieldset v-if="!isBewerken" class="sectie">
       <legend>Eerste beoordeling (optioneel)</legend>
-      <p class="toelichting">
-        Laat de cijfers staan zoals ze zijn als je nog geen beoordeling wilt toevoegen.
-      </p>
-      <div class="sectie__velden">
+      <label class="aanbevolen">
+        <input v-model="beoordelingToevoegen" type="checkbox" />
+        Direct een beoordeling toevoegen
+      </label>
+      <div v-if="beoordelingToevoegen" class="sectie__velden">
         <div class="veld">
           <label for="form-beoordeling-smaak">Cijfer smaak (1–10)</label>
           <input
@@ -316,7 +319,7 @@ function verzenden(): void {
           />
         </div>
       </div>
-      <label class="aanbevolen">
+      <label v-if="beoordelingToevoegen" class="aanbevolen">
         <input v-model="beoordelingAanbevolen" type="checkbox" />
         Ik beveel dit verspakket aan
       </label>
@@ -345,10 +348,13 @@ function verzenden(): void {
   border: 1px solid var(--kleur-rand);
   border-radius: var(--straal);
   background-color: var(--kleur-oppervlak);
+  box-shadow: var(--schaduw-klein);
 }
 
 .sectie > legend {
   padding-inline: var(--ruimte-2);
+  color: var(--kleur-primair-donker);
+  font-size: 1.05rem;
   font-weight: 700;
 }
 

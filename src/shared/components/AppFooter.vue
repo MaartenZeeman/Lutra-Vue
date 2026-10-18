@@ -10,7 +10,7 @@
 <style scoped>
 .voet {
   border-top: 1px solid var(--kleur-rand);
-  background-color: var(--kleur-oppervlak);
+  background-color: var(--kleur-oppervlak-zwak);
 }
 
 .voet__binnen {
@@ -18,7 +18,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--ruimte-2);
-  padding-block: var(--ruimte-4);
+  padding-block: var(--ruimte-5);
   color: var(--kleur-tekst-zacht);
   font-size: 0.9rem;
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { ApiError, foutmelding } from '@/shared/api/apiError'
 import StatusBlok from '@/shared/components/StatusBlok.vue'
@@ -20,12 +20,17 @@ import {
 } from '../model/verspakket'
 
 const route = useRoute()
+const router = useRouter()
 
 const verspakket = ref<Verspakket | null>(null)
 const bezig = ref(true)
 const fout = ref<string | null>(null)
 const nietGevonden = ref(false)
 const actieveFoto = ref(0)
+
+const verwijderBevestigen = ref(false)
+const verwijderenBezig = ref(false)
+const verwijderFout = ref<string | null>(null)
 
 const id = computed(() => String(route.params.id ?? ''))
 const fotos = computed(() => verspakket.value?.fotos ?? [])
@@ -65,6 +70,31 @@ async function laden(): Promise<void> {
   }
 }
 
+function annuleerVerwijderen(): void {
+  verwijderBevestigen.value = false
+  verwijderFout.value = null
+}
+
+async function verwijderen(): Promise<void> {
+  verwijderenBezig.value = true
+  verwijderFout.value = null
+
+  try {
+    await verspakkettenApi.remove(id.value)
+    await router.push({ name: 'verspakketten' })
+  } catch (foutWaarde) {
+    if (foutWaarde instanceof ApiError && foutWaarde.status === 404) {
+      verwijderBevestigen.value = false
+      nietGevonden.value = true
+      verspakket.value = null
+    } else {
+      verwijderFout.value = foutmelding(foutWaarde)
+    }
+  } finally {
+    verwijderenBezig.value = false
+  }
+}
+
 onMounted(() => {
   void laden()
 })
@@ -87,13 +117,39 @@ onMounted(() => {
           <h1>{{ verspakket.naam }}</h1>
           <p class="kop__supermarkt">{{ verspakket.supermarkt?.naam ?? 'Onbekende supermarkt' }}</p>
         </div>
-        <RouterLink
-          class="knop"
-          :to="{ name: 'verspakket-bewerken', params: { id: verspakket.id } }"
-        >
-          Bewerken
-        </RouterLink>
+        <div class="kop__acties">
+          <RouterLink
+            class="knop"
+            :to="{ name: 'verspakket-bewerken', params: { id: verspakket.id } }"
+          >
+            Bewerken
+          </RouterLink>
+          <template v-if="verwijderBevestigen">
+            <button
+              class="knop knop--gevaar"
+              type="button"
+              :disabled="verwijderenBezig"
+              @click="verwijderen"
+            >
+              {{ verwijderenBezig ? 'Bezig…' : 'Ja, verwijderen' }}
+            </button>
+            <button class="knop" type="button" @click="annuleerVerwijderen">Annuleren</button>
+          </template>
+          <button
+            v-else
+            class="knop knop--gevaar"
+            type="button"
+            @click="verwijderBevestigen = true"
+          >
+            Verwijderen
+          </button>
+        </div>
       </div>
+
+      <p v-if="verwijderBevestigen" class="kop__bevestiging">
+        Dit verspakket en al zijn beoordelingen worden verwijderd. Weet je het zeker?
+      </p>
+      <p v-if="verwijderFout" class="foutmelding" role="alert">{{ verwijderFout }}</p>
 
       <div class="detail">
         <div class="detail__galerij">
@@ -165,11 +221,15 @@ onMounted(() => {
 
       <section class="blok">
         <h2>Beoordelingen</h2>
-        <BeoordelingenLijst :beoordelingen="verspakket.beoordelingen" />
+        <BeoordelingenLijst
+          :verspakket-id="verspakket.id"
+          :beoordelingen="verspakket.beoordelingen"
+          @gewijzigd="() => void laden()"
+        />
         <BeoordelingForm
           class="beoordeling-form"
           :verspakket-id="verspakket.id"
-          @toegevoegd="() => void laden()"
+          @opgeslagen="() => void laden()"
         />
       </section>
     </template>
@@ -202,6 +262,17 @@ onMounted(() => {
   color: var(--kleur-tekst-zacht);
 }
 
+.kop__acties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-2);
+}
+
+.kop__bevestiging {
+  margin: 0 0 var(--ruimte-4);
+  color: var(--kleur-tekst-zacht);
+}
+
 .detail {
   display: grid;
   gap: var(--ruimte-5);
@@ -217,6 +288,7 @@ onMounted(() => {
 .galerij__hoofd {
   overflow: hidden;
   aspect-ratio: 4 / 3;
+  border-color: var(--kleur-rand-sterk);
 }
 
 .galerij__miniaturen {
@@ -243,6 +315,7 @@ onMounted(() => {
 .detail__zijkaart {
   align-self: start;
   padding: var(--ruimte-5);
+  border-top: 4px solid var(--kleur-primair);
 }
 
 .detail__kop {
@@ -254,6 +327,7 @@ onMounted(() => {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
+  color: var(--kleur-primair-donker);
 }
 
 .personen {
@@ -269,6 +343,8 @@ onMounted(() => {
 
 .blok {
   margin-bottom: var(--ruimte-6);
+  padding-top: var(--ruimte-5);
+  border-top: 1px solid var(--kleur-rand);
 }
 
 .ingredienten {

@@ -1,26 +1,28 @@
 :root {
-  --kleur-achtergrond: #f6f5f1;
+  --kleur-achtergrond: #f7f8f3;
   --kleur-oppervlak: #ffffff;
-  --kleur-oppervlak-zwak: #f1efe9;
-  --kleur-rand: #e0ddd5;
-  --kleur-rand-sterk: #cfcabf;
-  --kleur-tekst: #20272e;
-  --kleur-tekst-zacht: #5c6670;
-  --kleur-primair: #0f766e;
-  --kleur-primair-donker: #0b5d56;
-  --kleur-primair-zwak: #e4f1ef;
-  --kleur-accent: #b45309;
-  --kleur-fout: #a4231c;
-  --kleur-fout-zwak: #fbecea;
-  --kleur-succes: #256b45;
-  --kleur-succes-zwak: #e6f2ea;
+  --kleur-oppervlak-zwak: #eef3e9;
+  --kleur-rand: #dce5d7;
+  --kleur-rand-sterk: #c2d0bd;
+  --kleur-tekst: #203028;
+  --kleur-tekst-zacht: #617067;
+  --kleur-primair: #3f7849;
+  --kleur-primair-donker: #2e5c38;
+  --kleur-primair-zwak: #e4efe2;
+  --kleur-accent: #9a6808;
+  --kleur-accent-helder: #dfb64d;
+  --kleur-accent-zwak: #fbf3d8;
+  --kleur-fout: #aa443e;
+  --kleur-fout-zwak: #f9eae7;
+  --kleur-succes: #356b41;
+  --kleur-succes-zwak: #e5f0e3;
 
-  --straal: 10px;
-  --straal-klein: 6px;
+  --straal: 14px;
+  --straal-klein: 9px;
   --straal-rond: 999px;
 
-  --schaduw-klein: 0 1px 2px rgba(24, 32, 40, 0.06);
-  --schaduw: 0 2px 6px rgba(24, 32, 40, 0.08);
+  --schaduw-klein: 0 1px 2px rgba(32, 48, 40, 0.05);
+  --schaduw: 0 8px 24px rgba(32, 48, 40, 0.08);
 
   --ruimte-1: 0.25rem;
   --ruimte-2: 0.5rem;
@@ -30,7 +32,7 @@
   --ruimte-6: 2rem;
   --ruimte-7: 3rem;
 
-  --max-breedte: 1120px;
+  --max-breedte: 1180px;
 }
 
 *,
@@ -46,15 +48,25 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  background-color: var(--kleur-achtergrond);
+  background:
+    linear-gradient(180deg, rgba(228, 239, 226, 0.45) 0, transparent 15rem),
+    var(--kleur-achtergrond);
   color: var(--kleur-tekst);
   font-family:
+    Aptos,
+    'Segoe UI Variable',
     system-ui,
     -apple-system,
     'Segoe UI',
     Roboto,
     sans-serif;
   line-height: 1.5;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--kleur-accent-zwak);
+  color: var(--kleur-tekst);
 }
 
 img,
@@ -87,6 +99,7 @@ h2,
 h3 {
   line-height: 1.25;
   margin: 0 0 var(--ruimte-3);
+  letter-spacing: -0.02em;
 }
 
 h1 {
@@ -102,7 +115,7 @@ p {
 }
 
 :focus-visible {
-  outline: 3px solid var(--kleur-primair);
+  outline: 3px solid var(--kleur-accent-helder);
   outline-offset: 2px;
 }
 
@@ -130,8 +143,8 @@ p {
   align-items: center;
   justify-content: center;
   gap: var(--ruimte-2);
-  min-height: 2.5rem;
-  padding: 0.5rem 1rem;
+  min-height: 2.65rem;
+  padding: 0.55rem 1.05rem;
   border: 1px solid var(--kleur-rand-sterk);
   border-radius: var(--straal-klein);
   background-color: var(--kleur-oppervlak);
@@ -159,6 +172,7 @@ p {
   border-color: var(--kleur-primair);
   background-color: var(--kleur-primair);
   color: #ffffff;
+  box-shadow: 0 2px 5px rgba(46, 92, 56, 0.2);
 }
 
 .knop--primair:hover {
@@ -208,11 +222,34 @@ input[type='search'],
 select,
 textarea {
   width: 100%;
-  min-height: 2.5rem;
-  padding: 0.45rem 0.6rem;
+  min-height: 2.65rem;
+  padding: 0.52rem 0.7rem;
   border: 1px solid var(--kleur-rand-sterk);
   border-radius: var(--straal-klein);
   background-color: var(--kleur-oppervlak);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+input[type='text']:hover,
+input[type='url']:hover,
+input[type='number']:hover,
+input[type='search']:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--kleur-primair);
+}
+
+input[type='text']:focus,
+input[type='url']:focus,
+input[type='number']:focus,
+input[type='search']:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--kleur-primair);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--kleur-primair-zwak);
 }
 
 textarea {
@@ -260,10 +297,23 @@ input[type='radio'] {
   gap: var(--ruimte-1);
   padding: 0.1rem 0.5rem;
   border-radius: var(--straal-rond);
-  background-color: var(--kleur-primair-zwak);
-  color: var(--kleur-primair-donker);
+  border: 1px solid rgba(154, 104, 8, 0.18);
+  background-color: var(--kleur-accent-zwak);
+  color: #74500a;
   font-size: 0.8rem;
   font-weight: 600;
+}
+
+.badge--groen {
+  border-color: rgba(53, 107, 65, 0.18);
+  background-color: var(--kleur-succes-zwak);
+  color: var(--kleur-succes);
+}
+
+.badge--rood {
+  border-color: rgba(170, 68, 62, 0.18);
+  background-color: var(--kleur-fout-zwak);
+  color: var(--kleur-fout);
 }
 
 .scores {
@@ -294,6 +344,10 @@ input[type='radio'] {
 .tabel th {
   color: var(--kleur-tekst-zacht);
   font-weight: 600;
+}
+
+.tabel tbody tr:hover {
+  background-color: rgba(228, 239, 226, 0.35);
 }
 
 .tabel td:not(:first-child),

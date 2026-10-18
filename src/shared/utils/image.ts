@@ -1,6 +1,6 @@
 const PLACEHOLDER_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Geen foto beschikbaar">
-  <rect width="400" height="300" fill="#eceae4"/>
-  <g fill="none" stroke="#b9b4a8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="400" height="300" fill="#eef3e9"/>
+  <g fill="none" stroke="#a9b9a4" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
     <rect x="118" y="88" width="164" height="124" rx="14"/>
     <circle cx="166" cy="132" r="15"/>
     <path d="M130 200l50-54 40 44 28-26 42 40"/>

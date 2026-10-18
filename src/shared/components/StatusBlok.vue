@@ -40,4 +40,31 @@ defineEmits<{ opnieuw: [] }>()
   flex-wrap: wrap;
   align-items: center;
 }
+
+.melding[role='status'] {
+  display: flex;
+  align-items: center;
+  gap: var(--ruimte-2);
+}
+
+.melding[role='status']::before {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background-color: var(--kleur-primair);
+  content: '';
+  animation: laden 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes laden {
+  from {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 </style>

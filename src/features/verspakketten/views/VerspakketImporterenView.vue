@@ -188,12 +188,14 @@ onBeforeUnmount(stopPolling)
   gap: var(--ruimte-4);
   padding: var(--ruimte-4);
   margin-bottom: var(--ruimte-4);
+  border-top: 4px solid var(--kleur-primair);
 }
 
 .status {
   display: grid;
   gap: var(--ruimte-3);
   padding: var(--ruimte-4);
+  border-left: 4px solid var(--kleur-accent-helder);
 }
 
 .status h2 {

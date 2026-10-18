@@ -23,7 +23,7 @@ test('zoekt via de navigatiebalk en toont het resultaat', async ({ page }) => {
   await zoekbalk.getByRole('button', { name: 'Zoeken' }).click()
 
   await expect(page).toHaveURL(/\/verspakketten\?q=pasta/)
-  await expect(page.getByText('1 resultaat voor “pasta”')).toBeVisible()
+  await expect(page.getByText('1 resultaat geladen voor “pasta”')).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Pasta Pesto' })).toBeVisible()
 })
 

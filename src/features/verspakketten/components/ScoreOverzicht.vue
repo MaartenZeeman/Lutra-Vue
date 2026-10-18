@@ -30,6 +30,21 @@ const heeftScores = computed(() => smaak.value !== null || bereiden.value !== nu
   margin: 0;
 }
 
+.scores span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--ruimte-1);
+  padding: 0.18rem 0.5rem;
+  border: 1px solid rgba(154, 104, 8, 0.15);
+  border-radius: var(--straal-rond);
+  background-color: var(--kleur-accent-zwak);
+  color: #74500a;
+}
+
+.scores strong {
+  color: #5d420c;
+}
+
 .scores--leeg {
   font-style: italic;
 }

@@ -36,6 +36,7 @@ test('maakt een verspakket aan', async ({ page }) => {
     prijsInCenten: 749,
     aantalPersonen: 2,
     supermarktId: supermarkt.id,
+    beoordeling: null,
   })
 })
 

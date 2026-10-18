@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import { foutmelding } from '@/shared/api/apiError'
 
 import { verspakkettenApi } from '../api/verspakkettenApi'
+import type { Beoordeling } from '../model/verspakket'
 
 const props = defineProps<{
   verspakketId: string
+  beoordeling?: Beoordeling | null
 }>()
 
-const emit = defineEmits<{ toegevoegd: [] }>()
+const emit = defineEmits<{ opgeslagen: []; geannuleerd: [] }>()
 
-const cijferSmaak = ref(8)
-const cijferBereiden = ref(8)
-const aanbevolen = ref(true)
-const tekst = ref('')
+const isBewerken = computed(() => props.beoordeling != null)
+const veldSuffix = computed(() => props.beoordeling?.id ?? 'nieuw')
+
+const cijferSmaak = ref(props.beoordeling?.cijferSmaak ?? 8)
+const cijferBereiden = ref(props.beoordeling?.cijferBereiden ?? 8)
+const aanbevolen = ref(props.beoordeling?.aanbevolen ?? true)
+const tekst = ref(props.beoordeling?.tekst ?? '')
 const bezig = ref(false)
 const fout = ref<string | null>(null)
 const succes = ref(false)
@@ -38,22 +43,28 @@ async function versturen(): Promise<void> {
     return
   }
 
+  const invoer = {
+    cijferSmaak: cijferSmaak.value,
+    cijferBereiden: cijferBereiden.value,
+    aanbevolen: aanbevolen.value,
+    tekst: tekst.value.trim().length > 0 ? tekst.value.trim() : null,
+  }
+
   bezig.value = true
 
   try {
-    await verspakkettenApi.addBeoordeling(props.verspakketId, {
-      cijferSmaak: cijferSmaak.value,
-      cijferBereiden: cijferBereiden.value,
-      aanbevolen: aanbevolen.value,
-      tekst: tekst.value.trim().length > 0 ? tekst.value.trim() : null,
-    })
+    if (props.beoordeling) {
+      await verspakkettenApi.updateBeoordeling(props.verspakketId, props.beoordeling.id, invoer)
+    } else {
+      await verspakkettenApi.addBeoordeling(props.verspakketId, invoer)
+      tekst.value = ''
+      cijferSmaak.value = 8
+      cijferBereiden.value = 8
+      aanbevolen.value = true
+      succes.value = true
+    }
 
-    tekst.value = ''
-    cijferSmaak.value = 8
-    cijferBereiden.value = 8
-    aanbevolen.value = true
-    succes.value = true
-    emit('toegevoegd')
+    emit('opgeslagen')
   } catch (foutWaarde) {
     fout.value = foutmelding(foutWaarde)
   } finally {
@@ -64,18 +75,18 @@ async function versturen(): Promise<void> {
 
 <template>
   <form class="kaart beoordeling-form" @submit.prevent="versturen">
-    <h3>Beoordeling toevoegen</h3>
+    <h3>{{ isBewerken ? 'Beoordeling bewerken' : 'Beoordeling toevoegen' }}</h3>
 
     <p v-if="fout" class="foutmelding" role="alert">{{ fout }}</p>
-    <p v-if="succes" class="melding melding--succes" role="status">
+    <p v-if="succes && !isBewerken" class="melding melding--succes" role="status">
       Bedankt, je beoordeling is opgeslagen.
     </p>
 
     <div class="beoordeling-form__cijfers">
       <div class="veld">
-        <label for="cijfer-smaak">Cijfer smaak (1–10)</label>
+        <label :for="`cijfer-smaak-${veldSuffix}`">Cijfer smaak (1–10)</label>
         <input
-          id="cijfer-smaak"
+          :id="`cijfer-smaak-${veldSuffix}`"
           v-model.number="cijferSmaak"
           type="number"
           min="1"
@@ -84,9 +95,9 @@ async function versturen(): Promise<void> {
         />
       </div>
       <div class="veld">
-        <label for="cijfer-bereiden">Cijfer bereiden (1–10)</label>
+        <label :for="`cijfer-bereiden-${veldSuffix}`">Cijfer bereiden (1–10)</label>
         <input
-          id="cijfer-bereiden"
+          :id="`cijfer-bereiden-${veldSuffix}`"
           v-model.number="cijferBereiden"
           type="number"
           min="1"
@@ -109,9 +120,9 @@ async function versturen(): Promise<void> {
     </fieldset>
 
     <div class="veld">
-      <label for="beoordeling-tekst">Toelichting (optioneel)</label>
+      <label :for="`beoordeling-tekst-${veldSuffix}`">Toelichting (optioneel)</label>
       <textarea
-        id="beoordeling-tekst"
+        :id="`beoordeling-tekst-${veldSuffix}`"
         v-model="tekst"
         maxlength="1024"
         placeholder="Wat vond je van het verspakket?"
@@ -119,9 +130,12 @@ async function versturen(): Promise<void> {
       <span class="toelichting">{{ tekst.length }} / 1024 tekens</span>
     </div>
 
-    <div>
+    <div class="beoordeling-form__acties">
       <button class="knop knop--primair" type="submit" :disabled="bezig">
-        {{ bezig ? 'Bezig…' : 'Beoordeling plaatsen' }}
+        {{ bezig ? 'Bezig…' : isBewerken ? 'Wijzigingen opslaan' : 'Beoordeling plaatsen' }}
+      </button>
+      <button v-if="isBewerken" class="knop" type="button" @click="emit('geannuleerd')">
+        Annuleren
       </button>
     </div>
   </form>
@@ -132,10 +146,17 @@ async function versturen(): Promise<void> {
   display: grid;
   gap: var(--ruimte-4);
   padding: var(--ruimte-5);
+  border-top: 4px solid var(--kleur-accent-helder);
 }
 
 .beoordeling-form h3 {
   margin: 0;
+}
+
+.beoordeling-form__acties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-3);
 }
 
 .beoordeling-form__cijfers {

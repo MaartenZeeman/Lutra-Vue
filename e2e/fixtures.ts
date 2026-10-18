@@ -33,7 +33,13 @@ export function verspakketDetail(naam = 'Jumbo Satépannetje') {
       averageCijferSmaak: 8.5,
       averageCijferBereiden: 7.2,
       beoordelingen: [
-        { cijferSmaak: 9, cijferBereiden: 8, aanbevolen: true, tekst: 'Heerlijk met de kinderen.' },
+        {
+          id: '22222222-2222-2222-2222-222222222222',
+          cijferSmaak: 9,
+          cijferBereiden: 8,
+          aanbevolen: true,
+          tekst: 'Heerlijk met de kinderen.',
+        },
       ],
       fotos: [],
       ingredienten: [{ naam: 'Kipfilet', hoeveelheid: 300, eenheid: 0, inbegrepen: true }],

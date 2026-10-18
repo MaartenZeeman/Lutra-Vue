@@ -64,6 +64,7 @@ const supermarkt = computed(() => props.verspakket.supermarkt?.naam ?? 'Onbekend
 .verspakket__beeld {
   aspect-ratio: 4 / 3;
   background-color: var(--kleur-oppervlak-zwak);
+  overflow: hidden;
 }
 
 .verspakket__inhoud {
@@ -71,18 +72,20 @@ const supermarkt = computed(() => props.verspakket.supermarkt?.naam ?? 'Onbekend
   flex-direction: column;
   gap: var(--ruimte-1);
   flex: 1;
-  padding: var(--ruimte-4);
+  padding: 1.1rem;
 }
 
 .verspakket__naam {
   margin: 0;
-  font-size: 1.05rem;
+  color: var(--kleur-tekst);
+  font-size: 1.08rem;
 }
 
 .verspakket__supermarkt {
   margin: 0;
   color: var(--kleur-tekst-zacht);
   font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .verspakket__meta {
@@ -92,5 +95,9 @@ const supermarkt = computed(() => props.verspakket.supermarkt?.naam ?? 'Onbekend
   margin: auto 0 0;
   padding-top: var(--ruimte-2);
   font-weight: 600;
+}
+
+.verspakket__meta span:first-child {
+  color: var(--kleur-primair-donker);
 }
 </style>

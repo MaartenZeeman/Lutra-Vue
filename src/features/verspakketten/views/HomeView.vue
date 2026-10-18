@@ -73,9 +73,7 @@ watch(sorteerSleutel, () => {
     <div class="kop">
       <div>
         <h1>Top 10 verspakketten</h1>
-        <p class="kop__tekst">
-          De best beoordeelde verspakketten op smaak, samengesteld uit alle beoordelingen.
-        </p>
+        <p class="kop__tekst">Bekijk tien verspakketten en kies zelf hoe je ze sorteert.</p>
       </div>
 
       <div class="veld kop__sortering">
@@ -108,7 +106,9 @@ watch(sorteerSleutel, () => {
     </div>
 
     <div v-if="!bezig && !fout" class="meer">
-      <RouterLink class="knop" :to="{ name: 'verspakketten' }">Meer verspakketten</RouterLink>
+      <RouterLink class="knop knop--primair" :to="{ name: 'verspakketten' }">
+        Meer verspakketten
+      </RouterLink>
     </div>
   </section>
 </template>
@@ -121,6 +121,8 @@ watch(sorteerSleutel, () => {
   align-items: flex-end;
   gap: var(--ruimte-4);
   margin-bottom: var(--ruimte-5);
+  padding-bottom: var(--ruimte-4);
+  border-bottom: 1px solid var(--kleur-rand);
 }
 
 .kop__tekst {
@@ -136,7 +138,7 @@ watch(sorteerSleutel, () => {
 .raster {
   display: grid;
   gap: var(--ruimte-4);
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14.5rem), 1fr));
 }
 
 .meer {

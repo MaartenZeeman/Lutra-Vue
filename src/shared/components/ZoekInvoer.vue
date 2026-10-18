@@ -37,7 +37,7 @@ function bijInvoer(event: Event): void {
       :value="modelValue"
       @input="bijInvoer"
     />
-    <button class="knop knop--klein" type="submit">{{ knopLabel }}</button>
+    <button class="knop knop--klein zoek__knop" type="submit">{{ knopLabel }}</button>
   </form>
 </template>
 
@@ -50,5 +50,18 @@ function bijInvoer(event: Event): void {
 
 .zoek input {
   min-width: 0;
+  background-color: var(--kleur-achtergrond);
+}
+
+.zoek__knop {
+  border-color: var(--kleur-primair);
+  background-color: var(--kleur-primair-zwak);
+  color: var(--kleur-primair-donker);
+}
+
+.zoek__knop:hover {
+  border-color: var(--kleur-primair-donker);
+  background-color: var(--kleur-primair);
+  color: #ffffff;
 }
 </style>

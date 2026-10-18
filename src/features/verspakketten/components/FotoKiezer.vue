@@ -155,7 +155,7 @@ function alsHoofdfoto(index: number): void {
   aspect-ratio: 1;
   object-fit: cover;
   border: 1px solid var(--kleur-rand);
-  border-radius: var(--straal-klein);
+  border-radius: var(--straal);
 }
 
 .foto-item__acties {

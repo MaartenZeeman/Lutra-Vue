@@ -118,6 +118,7 @@ function bijwerkenGetal(index: number, sleutel: Veld['sleutel'], event: Event): 
   padding: var(--ruimte-3);
   border: 1px solid var(--kleur-rand);
   border-radius: var(--straal-klein);
+  background-color: var(--kleur-oppervlak-zwak);
 }
 
 .voeding-entry__kop {

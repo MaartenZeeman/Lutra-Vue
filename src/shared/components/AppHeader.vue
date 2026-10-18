@@ -82,8 +82,12 @@ function zoeken(): void {
 
 <style scoped>
 .kop {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   border-bottom: 1px solid var(--kleur-rand);
   background-color: var(--kleur-oppervlak);
+  box-shadow: 0 1px 8px rgba(32, 48, 40, 0.04);
 }
 
 .kop__balk {
@@ -108,20 +112,34 @@ function zoeken(): void {
 }
 
 .merk__teken {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--straal-klein);
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 65% 35% 62% 38%;
   background-color: var(--kleur-primair);
   color: #ffffff;
   font-weight: 700;
+  transform: rotate(-4deg);
+}
+
+.merk__teken::after {
+  position: absolute;
+  top: -0.1rem;
+  right: -0.08rem;
+  width: 0.48rem;
+  height: 0.48rem;
+  border: 2px solid var(--kleur-oppervlak);
+  border-radius: 50%;
+  background-color: var(--kleur-accent-helder);
+  content: '';
 }
 
 .merk__naam {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.02em;
 }
 
 .menu-knop {
@@ -152,7 +170,7 @@ function zoeken(): void {
 }
 
 .navigatie a {
-  padding: 0.4rem 0.6rem;
+  padding: 0.45rem 0.65rem;
   border-radius: var(--straal-klein);
   color: var(--kleur-tekst-zacht);
   text-decoration: none;
@@ -182,6 +200,10 @@ function zoeken(): void {
   .navigatie {
     display: flex;
     justify-self: start;
+  }
+
+  .kop__zoek {
+    width: min(21rem, 28vw);
   }
 }
 </style>

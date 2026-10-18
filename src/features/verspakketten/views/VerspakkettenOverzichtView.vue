@@ -42,10 +42,12 @@ const resultaatTekst = computed(() => {
   const term = zoekterm.value.trim()
 
   if (term.length > 0) {
-    return aantal === 1 ? `1 resultaat voor “${term}”` : `${aantal} resultaten voor “${term}”`
+    return aantal === 1
+      ? `1 resultaat geladen voor “${term}”`
+      : `${aantal} resultaten geladen voor “${term}”`
   }
 
-  return aantal === 1 ? '1 verspakket' : `${aantal} verspakketten`
+  return aantal === 1 ? '1 verspakket geladen' : `${aantal} verspakketten geladen`
 })
 
 function huidigeOptie(): Sorteeroptie {
@@ -206,10 +208,13 @@ onBeforeUnmount(() => {
   grid-template-columns: 1fr;
   padding: var(--ruimte-4);
   margin-bottom: var(--ruimte-4);
+  border-color: var(--kleur-rand-sterk);
+  background-color: rgba(255, 255, 255, 0.82);
 }
 
 .resultaat {
   color: var(--kleur-tekst-zacht);
+  font-size: 0.92rem;
 }
 
 .raster {

@@ -20,4 +20,6 @@ export const supermarktenApi = {
 
   update: (id: string, input: SupermarktAanmaak) =>
     httpClient.put<void>(`/supermarkten/${encodeURIComponent(id)}`, input),
+
+  remove: (id: string) => httpClient.delete<void>(`/supermarkten/${encodeURIComponent(id)}`),
 }

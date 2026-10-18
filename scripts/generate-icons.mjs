@@ -6,7 +6,7 @@ import { deflateSync } from 'node:zlib'
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const outputDir = resolve(projectRoot, 'public')
 
-const BACKGROUND = [15, 118, 110]
+const BACKGROUND = [63, 120, 73]
 const FOREGROUND = [255, 255, 255]
 const SAMPLES_PER_AXIS = 3
 

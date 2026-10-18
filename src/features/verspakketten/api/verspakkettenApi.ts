@@ -41,10 +41,23 @@ export const verspakkettenApi = {
   update: (id: string, input: VerspakketUpdate) =>
     httpClient.put<void>(`/verspakketten/${encodeURIComponent(id)}`, input),
 
+  remove: (id: string) => httpClient.delete<void>(`/verspakketten/${encodeURIComponent(id)}`),
+
   addBeoordeling: (id: string, input: BeoordelingAanmaak) =>
     httpClient.post<{ id: string }>(
       `/verspakketten/${encodeURIComponent(id)}/beoordelingen`,
       input,
+    ),
+
+  updateBeoordeling: (id: string, beoordelingId: string, input: BeoordelingAanmaak) =>
+    httpClient.put<void>(
+      `/verspakketten/${encodeURIComponent(id)}/beoordelingen/${encodeURIComponent(beoordelingId)}`,
+      input,
+    ),
+
+  removeBeoordeling: (id: string, beoordelingId: string) =>
+    httpClient.delete<void>(
+      `/verspakketten/${encodeURIComponent(id)}/beoordelingen/${encodeURIComponent(beoordelingId)}`,
     ),
 
   importFromUrl: (url: string) =>
